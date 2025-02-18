@@ -10,23 +10,15 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Queue
 import java.util.concurrent.ConcurrentLinkedQueue
 
-typealias EvenProcessor = (Any) -> Unit
+typealias SuspendableEvenProcessor = suspend (Any) -> Unit
 
-class ExtensionContainer(
+class ExtensionContainerV2(
     name: String,
     events: SharedFlow<Any>,
+    private val readyForEvent: (Any) -> Boolean = { true },
+    private val handleEvent: SuspendableEvenProcessor
 ) {
-    @Volatile
-    private var readyForEvent: (Any) -> Boolean = { true }
-    @Volatile
-    private var handleEvent: EvenProcessor = { println(it) }
 
-    fun setReadyForEvent(readyForEvent: (Any) -> Boolean) {
-        this.readyForEvent = readyForEvent
-    }
-    fun setHandleEvent(handleEvent: (Any) -> Unit) {
-        this.handleEvent = handleEvent
-    }
     // A single-threaded dispatcher for the subscriber to submit events to the queue,
     // as well as to run the processing loop.
     private val subscriberDispatcher =
@@ -46,7 +38,6 @@ class ExtensionContainer(
     private val eventQueue: Queue<Any> = ConcurrentLinkedQueue()
 
     private val job: Job
-
     init {
         job = subscribeTo(events)
         // Launch a coroutine in the processing scope to sequentially process events from the queue.
@@ -63,7 +54,6 @@ class ExtensionContainer(
 
     fun stopEvent() {
         state = State.PENDING
-        job.cancel()
     }
 
     fun startEvent() {

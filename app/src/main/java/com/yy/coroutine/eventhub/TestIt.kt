@@ -15,9 +15,13 @@ object Configuration {
 }
 
 fun main() = runBlocking {
+    val javaExtension = JavaExtension(ExtensionContainer("Java", EventHub.events))
+    javaExtension.onRegister()
+
     // Create two subscribers with custom event handling logic
-    ExtensionContainer(
+    ExtensionContainerV2(
         "A",
+        EventHub.events,
         { event -> Configuration.isConfigurationReadForEvent(event) }) { event ->
         println("Subscriber A received event: $event")
         launch {
@@ -25,9 +29,8 @@ fun main() = runBlocking {
             println("Subscriber A receive response: $response")
         }
     }
-        .subscribeTo(EventHub.events)
 
-    ExtensionContainer("B") { event ->
+    ExtensionContainerV2("B", EventHub.events) { event ->
         println("Subscriber B start to process event: $event")
         // Simulate long-running processing
         Thread.sleep(500)
@@ -35,19 +38,16 @@ fun main() = runBlocking {
         Thread.sleep(500)
         println("Subscriber B processed event: $event")
     }
-        .subscribeTo(EventHub.events)
 
-    ExtensionContainer("C") { event ->
+    ExtensionContainerV2("C", EventHub.events) { event ->
         // Simulate wildcard listener
         println("Subscriber C received event: $event")
     }
-        .subscribeTo(EventHub.events)
 
-    ExtensionContainer(
-        "D", { true }) { event ->
+    ExtensionContainerV2(
+        "D", EventHub.events,{ true }) { event ->
         println("Subscriber D received event: $event")
     }
-        .subscribeTo(EventHub.events)
     // Dispatch some events
     EventHub.dispatch(1)
     EventHub.dispatch(2)
