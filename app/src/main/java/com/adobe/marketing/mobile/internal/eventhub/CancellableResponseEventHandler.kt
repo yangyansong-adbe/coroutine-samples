@@ -1,6 +1,5 @@
-package com.adobe.marketing.mobile.internal.eventhub.containerv2
+package com.adobe.marketing.mobile.internal.eventhub
 
-import com.adobe.marketing.mobile.internal.eventhub.Event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
