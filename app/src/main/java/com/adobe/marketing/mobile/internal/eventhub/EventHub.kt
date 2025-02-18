@@ -42,11 +42,5 @@ object EventHub {
         eventHubExecutorScope.launch {
             eventPreprocessorsChannel.send(event)
         }
-        eventDispatcherScope.launch {
-            // set event id
-            // evaluate rules (cpu-intensive operation)
-            _events.emit(event)
-            println(event.getNumber())
-        }
     }
 }
