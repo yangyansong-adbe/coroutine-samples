@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "CoroutineSample"
 include(":app")
- 
+include(":newEventHub")
+include(":sdk")

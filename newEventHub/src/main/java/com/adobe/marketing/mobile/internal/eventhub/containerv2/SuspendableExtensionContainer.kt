@@ -1,6 +1,5 @@
 package com.adobe.marketing.mobile.internal.eventhub.containerv2
 
-import androidx.collection.MutableObjectList
 import com.adobe.marketing.mobile.internal.eventhub.Event
 import com.adobe.marketing.mobile.internal.eventhub.EventHub
 import com.adobe.marketing.mobile.internal.eventhub.State
@@ -117,7 +116,7 @@ class SuspendableExtensionContainer(
     override fun dispatch(event: Event) {
         EventHub.dispatch(event)
     }
-    private val list = MutableObjectList<String>()
+    private val list = mutableSetOf<String>()
 
     private var counter = 0
     override suspend fun getSharedState(count: Int): String? {

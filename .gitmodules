@@ -1,0 +1,8 @@
+[submodule "core"]
+	path = core
+	url = git@github.com:yangyansong-adbe/aepsdk-core-android.git
+	branch = use_coroutines_1
+[submodule "edge"]
+	path = edge
+	url = git@github.com:yangyansong-adbe/aepsdk-edge-android.git
+	branch = Coroutine_Dispatcher
